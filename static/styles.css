@@ -224,4 +224,31 @@ ul.task-list {
         margin-left: 10px;
         font-style: italic;
     }
+    /* Task List Styles */
+ul.task-list {
+    list-style: none;
+    margin-top: 30px;
+    padding-left: 0;
+    max-height: 300px;  /* Adjust the height to ensure it can scroll */
+    overflow-y: auto;   /* Allow scrolling when content overflows */
+    padding-right: 10px; /* Add right padding for scrollbar */
+}
+
+/* Task Item Styles */
+.task-item {
+    background-color: #f4f7ff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.task-item:hover {
+    background-color: #dfe9ff;
+}
+
 }
