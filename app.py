@@ -41,7 +41,8 @@ def add_task():
             'task': task,
             'date': current_time.strftime('%Y-%m-%d'),
             'time': current_time.strftime('%H:%M:%S'),
-            'day': current_time.strftime('%A')
+            'day': current_time.strftime('%A'),
+            'created_by': session['username']  # Store who created the task
         }
         
         # Retrieve tasks from session and add the new task
@@ -58,10 +59,16 @@ def remove_task(task_id):
         return redirect(url_for('login'))
     
     task_list = session.get('tasks', [])
-    if 0 <= task_id < len(task_list):
-        task_list.pop(task_id)  # Remove the task at the specified index
-        session['tasks'] = task_list  # Save updated task list to session
-        
+    
+    # Ensure only admin can delete any task or the creator can delete their own task
+    if session['username'] == admin_username or task_list[task_id]['created_by'] == session['username']:
+        if 0 <= task_id < len(task_list):
+            task_list.pop(task_id)  # Remove the task at the specified index
+            session['tasks'] = task_list  # Save updated task list to session
+    else:
+        # Redirect to the index page with a message if a user tries to delete a task they don't own
+        return redirect(url_for('index', error="You are not authorized to delete this task."))
+    
     return redirect(url_for('index'))
 
 # Registration route (hardcoded to allow only 'admin' with password '123')
