@@ -1,4 +1,4 @@
-Flask==2.2.2
+Flask==2.2.5
 Flask-Bcrypt==1.0.1
-Flask-Session==0.4.0
-vercel-python==0.5.1
+Flask-Session==0.3.2
+Flask-SQLAlchemy==2.5.1
