@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="header">My Fun To-Do List</h1>
+
+        <!-- Form to Add Task -->
+        <form action="/add" method="POST">
+            <input type="text" name="task" class="input" placeholder="Add a new task..." required>
+            <button type="submit" class="add-btn">Add Task</button>
+        </form>
+
+        <!-- Task List -->
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task-item">
+                    <span class="task-name">{{ task['task'] }}</span>
+                    <span class="task-user">By: {{ task['username'] }}</span>  <!-- Display the username -->
+                    <span class="task-time">
+                        ({{ task['day'] }}, {{ task['date'] }} at {{ task['time'] }})
+                    </span>
+                    <a href="{{ url_for('remove_task', task_id=loop.index0) }}" class="remove-btn">❌</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Decorative Elements -->
+    <div class="decoration">
+        <div class="books"></div>
+        <div class="stars"></div>
+        <div class="sun"></div>
+    </div>
+</body>
+</html>
