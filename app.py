@@ -81,7 +81,8 @@ def register():
             # Automatically register the admin account (password is checked directly)
             if username == admin_username and bcrypt.check_password_hash(hashed_admin_password, password):
                 session['username'] = username
-                return redirect(url_for('index'))
+                # Redirect to name input if username is admin
+                return redirect(url_for('set_name'))
             else:
                 error = "Invalid credentials."
     
@@ -98,16 +99,37 @@ def login():
         # Check for hardcoded admin credentials
         if username == admin_username and bcrypt.check_password_hash(hashed_admin_password, password):
             session['username'] = username
+            # If no name is set in session, prompt to set name
+            if 'name' not in session:
+                return redirect(url_for('set_name'))
             return redirect(url_for('index'))
         else:
             error = "Invalid username or password."
     
     return render_template('login.html', error=error)
 
+# Route to set user name after login
+@app.route('/set_name', methods=['GET', 'POST'])
+def set_name():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    error = None
+    if request.method == 'POST':
+        user_name = request.form.get('name')
+        if user_name:
+            session['name'] = user_name  # Store the name in session
+            return redirect(url_for('index'))
+        else:
+            error = "Name cannot be empty."
+    
+    return render_template('set_name.html', error=error)
+
 # Logout route
 @app.route('/logout')
 def logout():
     session.pop('username', None)  # Remove session data
+    session.pop('name', None)       # Clear the name from session as well
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
