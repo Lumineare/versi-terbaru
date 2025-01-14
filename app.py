@@ -17,9 +17,10 @@ Session(app)
 
 # Redis Configuration
 redis_client = redis.StrictRedis(
-    host=os.environ.get('REDIS_HOST'),  # Redis host from Vercel KV
+    host=os.environ.get('6389dab2-4a34-4d51-b9dc-d61140f7359e'),  # Redis host from Vercel KV
     port=6379,                         # Default Redis port
-    password=os.environ.get('REDIS_PASSWORD'),  # Redis password
+    password=os.environ.get('9f0b1ca3d88fd9acd8d1a9addd01a5104af0b82bf9
+'),  # Redis password
     decode_responses=True
 )
 
