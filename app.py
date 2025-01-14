@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_bcrypt import Bcrypt
 from datetime import datetime
 
@@ -25,31 +25,30 @@ def index():
     if 'user_name' not in session:
         return redirect(url_for('set_name'))
 
-    # Retrieve tasks from the hardcoded list
     return render_template('index.html', tasks=tasks, username=session['username'], user_name=session['user_name'])
 
-# Add a task
+# Add a task (AJAX)
 @app.route('/add', methods=['POST'])
 def add_task():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    task = request.form.get('task')
-    if task:
+    task_name = request.form['task']
+    if task_name:
         current_time = datetime.now()
         task_info = {
-            'task': task,
+            'task': task_name,
             'date': current_time.strftime('%Y-%m-%d'),
             'time': current_time.strftime('%H:%M:%S'),
             'day': current_time.strftime('%A'),
-            'created_by': session['user_name']  # Store who created the task (user's name)
+            'created_by': session['user_name']
         }
         tasks.append(task_info)  # Add task to the in-memory list
 
-    return redirect(url_for('index'))
+    return jsonify(success=True)
 
-# Remove a task
-@app.route('/remove/<int:task_id>')
+# Remove a task (AJAX)
+@app.route('/remove/<int:task_id>', methods=['POST'])
 def remove_task(task_id):
     if 'username' not in session:
         return redirect(url_for('login'))
@@ -59,7 +58,7 @@ def remove_task(task_id):
         if 0 <= task_id < len(tasks):
             tasks.pop(task_id)  # Remove task from the in-memory list
 
-    return redirect(url_for('index'))
+    return jsonify(success=True)
 
 # Registration route (hardcoded to allow only 'admin' with password '123')
 @app.route('/register', methods=['GET', 'POST'])
@@ -107,7 +106,6 @@ def set_name():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # If name is already set, redirect to index
     if 'user_name' in session:
         return redirect(url_for('index'))
 
@@ -125,8 +123,8 @@ def set_name():
 # Logout route
 @app.route('/logout')
 def logout():
-    session.pop('username', None)  # Remove session data
-    session.pop('user_name', None)  # Remove user's name from session
+    session.pop('username', None)
+    session.pop('user_name', None)
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
