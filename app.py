@@ -21,8 +21,12 @@ def index():
     if 'username' not in session:
         return redirect(url_for('login'))
 
+    # If user has no name set, prompt them to enter their name
+    if 'user_name' not in session:
+        return redirect(url_for('set_name'))
+
     # Retrieve tasks from the hardcoded list
-    return render_template('index.html', tasks=tasks, username=session['username'])
+    return render_template('index.html', tasks=tasks, username=session['username'], user_name=session['user_name'])
 
 # Add a task
 @app.route('/add', methods=['POST'])
@@ -38,7 +42,7 @@ def add_task():
             'date': current_time.strftime('%Y-%m-%d'),
             'time': current_time.strftime('%H:%M:%S'),
             'day': current_time.strftime('%A'),
-            'created_by': session['username']  # Store who created the task
+            'created_by': session['user_name']  # Store who created the task (user's name)
         }
         tasks.append(task_info)  # Add task to the in-memory list
 
@@ -51,7 +55,7 @@ def remove_task(task_id):
         return redirect(url_for('login'))
 
     # Only admin can delete any task, others can only delete their own tasks
-    if session['username'] == admin_username or tasks[task_id]['created_by'] == session['username']:
+    if session['username'] == admin_username or tasks[task_id]['created_by'] == session['user_name']:
         if 0 <= task_id < len(tasks):
             tasks.pop(task_id)  # Remove task from the in-memory list
 
@@ -74,7 +78,7 @@ def register():
             # Automatically register the admin account (password is checked directly)
             if bcrypt.check_password_hash(hashed_admin_password, password):
                 session['username'] = username
-                return redirect(url_for('index'))
+                return redirect(url_for('set_name'))  # After registering, go to set name
             else:
                 error = "Invalid credentials."
 
@@ -91,16 +95,38 @@ def login():
         # Check for hardcoded admin credentials
         if username == admin_username and bcrypt.check_password_hash(hashed_admin_password, password):
             session['username'] = username
-            return redirect(url_for('index'))
+            return redirect(url_for('set_name'))  # After login, go to set name
         else:
             error = "Invalid username or password."
 
     return render_template('login.html', error=error)
 
+# Set name route (user sets their name after login)
+@app.route('/set_name', methods=['GET', 'POST'])
+def set_name():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # If name is already set, redirect to index
+    if 'user_name' in session:
+        return redirect(url_for('index'))
+
+    error = None
+    if request.method == 'POST':
+        user_name = request.form.get('user_name')
+        if user_name:
+            session['user_name'] = user_name  # Store the user's name in the session
+            return redirect(url_for('index'))
+        else:
+            error = "Please enter your name."
+
+    return render_template('set_name.html', error=error)
+
 # Logout route
 @app.route('/logout')
 def logout():
     session.pop('username', None)  # Remove session data
+    session.pop('user_name', None)  # Remove user's name from session
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
