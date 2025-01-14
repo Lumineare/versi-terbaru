@@ -1,7 +1,4 @@
-colorama==0.4.6
-Jinja2==3.1.5
-MarkupSafe==3.0.2
-Flask==2.1.1
-Flask-SQLAlchemy==2.5.1
+Flask==2.2.2
 Flask-Bcrypt==1.0.1
 Flask-Session==0.4.0
+vercel-python==0.5.1
