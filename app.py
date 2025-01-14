@@ -17,11 +17,20 @@ Session(app)
 
 # Redis Configuration
 redis_client = redis.StrictRedis(
-    host=os.environ.get('6389dab2-4a34-4d51-b9dc-d61140f7359e'),  # Redis host from Vercel KV
-    port=6379,                         # Default Redis port
-    password=os.environ.get('6389dab2-4a34-4d51-b9dc-d61140f7359e'),  # Redis password
+    host=os.environ.get('REDIS_HOST'),  # Redis host from environment variable
+    port=6379,  # Default Redis port
+    password=os.environ.get('REDIS_PASSWORD'),
     decode_responses=True
 )
+
+# Verify Redis connection at app startup
+try:
+    redis_client.ping()  # Verify Redis connection
+except redis.exceptions.ConnectionError as e:
+    print(f"Redis connection error: {e}")
+    error = "Failed to connect to Redis."
+    # You can handle this error by rendering an error page or logging it
+    # return render_template('error.html', error=error)
 
 # Index route
 @app.route('/')
