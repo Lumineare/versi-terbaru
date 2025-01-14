@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 
 # Initialize Flask app
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'
+app.secret_key = '9f0b1ca3d88fd9acd8d1a9addd01a5104af0b82bf9
+'
 bcrypt = Bcrypt(app)
 
 # Session configuration
