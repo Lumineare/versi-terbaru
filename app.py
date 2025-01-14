@@ -32,6 +32,20 @@ except redis.exceptions.ConnectionError as e:
     # You can handle this error by rendering an error page or logging it
     # return render_template('error.html', error=error)
 
+# Ensure 'admin' account exists when the app starts
+@app.before_first_request
+def ensure_admin_account():
+    admin_username = "admin"
+    admin_password = "123"
+    
+    # Check if 'admin' already exists in Redis
+    if not redis_client.exists(f"user:{admin_username}"):
+        # Create hashed password for admin
+        hashed_password = bcrypt.generate_password_hash(admin_password).decode('utf-8')
+        # Save 'admin' user to Redis
+        redis_client.set(f"user:{admin_username}", hashed_password)
+        print(f"Admin account created with username: {admin_username}")
+
 # Index route
 @app.route('/')
 def index():
