@@ -22,7 +22,7 @@
             {% for task in tasks %}
                 <li class="task-item">
                     <span class="task-name">{{ task['task'] }}</span>
-                    <span class="task-user">By: {{ task['username'] }}</span>  <!-- Display the username -->
+                    <span class="task-user">By: {{ task['created_by'] }}</span>  <!-- Display the created_by username -->
                     <span class="task-time">
                         ({{ task['day'] }}, {{ task['date'] }} at {{ task['time'] }})
                     </span>
