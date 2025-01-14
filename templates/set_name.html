@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Name</title>
+</head>
+<body>
+    <h1>Welcome, {{ session['username'] }}</h1>
+    <h2>Please set your name</h2>
+    {% if error %}
+        <p style="color:red">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label for="user_name">Name:</label>
+        <input type="text" name="user_name" id="user_name" required>
+        <button type="submit">Set Name</button>
+    </form>
+</body>
+</html>
