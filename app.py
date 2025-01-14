@@ -24,8 +24,8 @@ def index():
     if 'username' not in session:
         return redirect(url_for('login'))
     
-    # Retrieve tasks (in this case, we can keep it hardcoded as well or mock tasks)
-    task_list = []  # Example: A list of hardcoded tasks (could be empty or customized)
+    # Retrieve tasks from session (instead of Redis)
+    task_list = session.get('tasks', [])  # Default to empty list if no tasks are stored
     return render_template('index.html', tasks=task_list, username=session['username'])
 
 # Add a task
@@ -36,8 +36,19 @@ def add_task():
     
     task = request.form.get('task')
     if task:
-        # Add task logic (could save to a list or session instead of Redis)
-        pass
+        current_time = datetime.now()
+        task_info = {
+            'task': task,
+            'date': current_time.strftime('%Y-%m-%d'),
+            'time': current_time.strftime('%H:%M:%S'),
+            'day': current_time.strftime('%A')
+        }
+        
+        # Retrieve tasks from session and add the new task
+        task_list = session.get('tasks', [])
+        task_list.append(task_info)
+        session['tasks'] = task_list  # Save updated task list to session
+        
     return redirect(url_for('index'))
 
 # Remove a task
@@ -46,7 +57,11 @@ def remove_task(task_id):
     if 'username' not in session:
         return redirect(url_for('login'))
     
-    # Remove task logic (could be from a list or session)
+    task_list = session.get('tasks', [])
+    if 0 <= task_id < len(task_list):
+        task_list.pop(task_id)  # Remove the task at the specified index
+        session['tasks'] = task_list  # Save updated task list to session
+        
     return redirect(url_for('index'))
 
 # Registration route (hardcoded to allow only 'admin' with password '123')
