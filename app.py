@@ -43,7 +43,7 @@ def add_task():
             'time': current_time.strftime('%H:%M:%S'),
             'day': current_time.strftime('%A'),
             'created_by': session['user_name'],
-            'completed': False  # Tambahkan atribut ini
+            'completed': False  # Add this attribute for completion status
         }
         tasks.append(task_info)  # Add task to the in-memory list
 
@@ -55,12 +55,12 @@ def complete_task(task_id):
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # Validasi ID task
+    # Validate task ID
     if 0 <= task_id < len(tasks):
         task = tasks[task_id]
         # Only the creator or admin can toggle completion status
         if task['created_by'] == session['user_name'] or session['username'] == admin_username:
-            task['completed'] = not task['completed']  # Toggle status
+            task['completed'] = not task['completed']  # Toggle completion status
 
     return redirect(url_for('index'))
 
