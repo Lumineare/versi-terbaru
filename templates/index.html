@@ -21,13 +21,16 @@
         <ul class="task-list" id="task-list">
             {% for task in tasks %}
                 <li class="task {% if task.completed %}completed{% endif %}" data-id="{{ loop.index0 }}">
+                    <!-- Checkbox to toggle completion -->
+                    <input type="checkbox" {% if task.completed %}checked{% endif %} 
+                        class="task-checkbox" 
+                        onchange="location.href='{{ url_for('complete_task', task_id=loop.index0) }}'">
+                    
                     <span class="task-name">{{ task.task }}</span>
                     <span class="task-user">By: {{ task.created_by }}</span> 
                     <span class="task-time">({{ task.day }}, {{ task.date }} at {{ task.time }})</span>
                     
-                    <!-- Links for task completion and removal -->
-                    <a href="{{ url_for('complete_task', task_id=loop.index0) }}" class="complete-btn">Toggle Complete</a>
-                    
+                    <!-- Task removal -->
                     <form action="/remove/{{ loop.index0 }}" method="POST" class="remove-form">
                         <button type="submit" class="remove-btn">❌</button>
                     </form>
