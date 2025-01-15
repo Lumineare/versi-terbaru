@@ -229,5 +229,45 @@ ul.task-list {
     opacity: 0.5;
     text-decoration: line-through;
 }
+    /* Style the task checkbox */
+.task-checkbox {
+    appearance: none;  /* Remove default checkbox appearance */
+    width: 20px;
+    height: 20px;
+    border: 2px solid #4CAF50;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Checked state for checkbox */
+.task-checkbox:checked {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    position: relative;
+}
+
+/* Add a checkmark inside the checkbox */
+.task-checkbox:checked::after {
+    content: '✔';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    font-size: 14px;
+    color: white;
+}
+
+/* Hover effect */
+.task-checkbox:hover {
+    background-color: #e8f5e9;
+    border-color: #388E3C;
+}
+
+/* Style the task when it's completed */
+.completed .task-name {
+    text-decoration: line-through;
+    color: #9E9E9E;
+}
 
 }
