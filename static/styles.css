@@ -225,4 +225,9 @@ ul.task-list {
         margin-left: 10px;
         font-style: italic;
     }
+    .completed {
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
 }
