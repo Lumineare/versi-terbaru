@@ -6,14 +6,13 @@
     <title>ChitchatApp</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
 </head>
 <body>
     <div class="container">
         <h1 class="header">ChitChat</h1>
 
         <!-- Form to Add Task -->
-        <form id="task-form">
+        <form action="/add" method="POST" id="task-form">
             <input type="text" name="task" class="input" placeholder="Add a new task..." required>
             <button type="submit" class="add-btn">CHAT!!!!</button>
         </form>
@@ -25,56 +24,12 @@
                     <span class="task-name">{{ task['task'] }}</span>
                     <span class="task-user">By: {{ task['created_by'] }}</span> 
                     <span class="task-time">({{ task['day'] }}, {{ task['date'] }} at {{ task['time'] }})</span>
-                    <button class="remove-btn">❌</button>
+                    <form action="/remove/{{ loop.index0 }}" method="POST" class="remove-form">
+                        <button type="submit" class="remove-btn">❌</button>
+                    </form>
                 </li>
             {% endfor %}
         </ul>
     </div>
-
-    <script>
-        $(document).ready(function(){
-            // Add task via AJAX
-            $("#task-form").submit(function(event){
-                event.preventDefault();
-                
-                var task = $("input[name='task']").val();
-                
-                $.ajax({
-                    url: "/add",
-                    type: "POST",
-                    data: { task: task },
-                    success: function(response) {
-                        if (response.success) {
-                            $('#task-list').append(
-                                `<li class="task-item">
-                                    <span class="task-name">${task}</span>
-                                    <span class="task-user">By: User</span>
-                                    <span class="task-time">(Today)</span>
-                                    <button class="remove-btn">❌</button>
-                                </li>`
-                            );
-                            $("input[name='task']").val(""); // Reset input
-                        }
-                    }
-                });
-            });
-
-            // Remove task via AJAX
-            $(document).on('click', '.remove-btn', function(){
-                var taskItem = $(this).closest('.task-item');
-                var taskId = taskItem.data('id');
-
-                $.ajax({
-                    url: `/remove/${taskId}`,
-                    type: "POST",
-                    success: function(response) {
-                        if (response.success) {
-                            taskItem.remove();
-                        }
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>
