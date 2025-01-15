@@ -42,9 +42,25 @@ def add_task():
             'date': current_time.strftime('%Y-%m-%d'),
             'time': current_time.strftime('%H:%M:%S'),
             'day': current_time.strftime('%A'),
-            'created_by': session['user_name']  # Store who created the task (user's name)
+            'created_by': session['user_name'],
+            'completed': False  # Tambahkan atribut ini
         }
         tasks.append(task_info)  # Add task to the in-memory list
+
+    return redirect(url_for('index'))
+
+# Mark task as complete
+@app.route('/complete/<int:task_id>')
+def complete_task(task_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # Validasi ID task
+    if 0 <= task_id < len(tasks):
+        task = tasks[task_id]
+        # Only the creator or admin can toggle completion status
+        if task['created_by'] == session['user_name'] or session['username'] == admin_username:
+            task['completed'] = not task['completed']  # Toggle status
 
     return redirect(url_for('index'))
 
